@@ -1,16 +1,24 @@
 {
-  "name": "gatsby-starter-plugin",
-  "version": "1.0.0",
-  "description": "A minimal boilerplate for the essential files Gatsby looks for in a plugin",
+  "name": "sc-ga-views",
+  "version": "0.1.0",
+  "description": "A Gatsby source plugin for Google Analytics page views",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo \"No build script setup\""
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stackcheats/stackcheats-source-firebase-comments"
+  },
   "keywords": [
     "gatsby",
-    "gatsby-plugin"
+    "gatsby-plugin",
+    "stackcheats"
   ],
-  "author": "Kyle Gill <kyle.robert.gill@gmail.com>",
-  "license": "0BSD"
+  "author": "athiththan11",
+  "license": "MIT",
+  "dependencies": {
+    "googleapis": "^39.0.0"
+  }
 }

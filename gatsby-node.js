@@ -1,14 +1,36 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.com/docs/node-apis/
- */
-// You can delete this file if you're not using it
+const { google } = require('googleapis')
 
-/**
- * You can uncomment the following line to verify that
- * your plugin is being loaded in your site.
- *
- * See: https://www.gatsbyjs.com/docs/creating-a-local-plugin/#developing-a-local-plugin-that-is-outside-your-project
- */
-exports.onPreInit = () => console.log("Loaded gatsby-starter-plugin")
+exports.sourceNodes = async (
+  { actions, createContentDigest },
+  pluginOptions
+) => {
+  const { createNode } = actions
+  const { email, keyFile, viewId, startDate } = pluginOptions
+
+  const scopes = [`https://www.googleapis.com/auth/analytics.readonly`]
+  const jwt = new google.auth.JWT(email, keyFile, null, scopes)
+  await jwt.authorize()
+
+  const views = await google.analytics('v3').data.ga.get({
+    auth: jwt,
+    ids: `ga:${viewId}`,
+    'start-date': startDate || '2019-01-01',
+    'end-date': 'today',
+    dimensions: 'ga:pagePath',
+    metrics: 'ga:pageViews',
+    sort: '-ga:pageViews',
+  })
+
+  for (let [path, count] of views.data.rows) {
+    createNode({
+      id: path,
+      slug: path,
+      count: Number(count),
+      internal: {
+        type: `SheetViews`,
+        mediaType: `text/plain`,
+        contentDigest: createContentDigest(JSON.stringify({ path, count })),
+      },
+    })
+  }
+}
